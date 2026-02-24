@@ -8,22 +8,53 @@ Auxilia desenvolvedores a criar e manter Commands, Queries e Controllers seguind
 
 ## Instalação
 
-### Via repositório remoto
+O plugin usa um **marketplace local** registrado no Claude Code. O marketplace fica em `~/.claude/plugins/marketplaces/local/` e aponta via symlink para este repositório.
 
-No Claude Code, execute os dois comandos abaixo (substitua pela URL real do repositório):
+### 1. Clone o repositório
+
+```bash
+git clone <url-do-repositorio>
+```
+
+### 2. Crie a estrutura do marketplace local (uma vez por máquina)
+
+```bash
+mkdir -p ~/.claude/plugins/marketplaces/local/{.claude-plugin,plugins}
+```
+
+Crie o arquivo `~/.claude/plugins/marketplaces/local/.claude-plugin/marketplace.json`:
+
+```json
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "local",
+  "description": "Plugins locais do projeto Upik",
+  "owner": {
+    "name": "Upik Dev Team"
+  },
+  "plugins": [
+    {
+      "name": "adb-api-skills",
+      "description": "Skills para auxiliar desenvolvimento no repositório rep-adb-api (CQRS, Commands, Queries, Controllers com padrões Clean Architecture + MediatR + FluentValidation)",
+      "source": "./plugins/adb-api-skills",
+      "category": "development"
+    }
+  ]
+}
+```
+
+### 3. Crie o symlink do plugin no marketplace
+
+```bash
+ln -s /caminho/para/ab-agents-skills \
+  ~/.claude/plugins/marketplaces/local/plugins/adb-api-skills
+```
+
+### 4. Registre o marketplace e instale o plugin no Claude Code
 
 ```
-/plugin marketplace add https://github.com/upik/ab-agents-skills
-/plugin install adb-api-skills@ab-agents-skills
-```
-
-> Repositórios **privados** funcionam normalmente, desde que o `git clone` já funcione no seu terminal (SSH, GitHub CLI ou `GITHUB_TOKEN` configurado).
-
-### Via clone local
-
-```
-/plugin marketplace add ./ab-agents-skills
-/plugin install adb-api-skills@ab-agents-skills
+/plugin marketplace add file://$HOME/.claude/plugins/marketplaces/local
+/plugin install adb-api-skills@local
 ```
 
 Após a instalação, reinicie o Claude Code. As skills e commands estarão disponíveis automaticamente.
