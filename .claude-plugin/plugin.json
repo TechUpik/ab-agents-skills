@@ -1,0 +1,7 @@
+{
+  "name": "adb-api-skills",
+  "description": "Skills para auxiliar desenvolvimento no repositório rep-adb-api (CQRS, Commands, Queries, Controllers com padrões Clean Architecture + MediatR + FluentValidation)",
+  "author": {
+    "name": "Upik Dev Team"
+  }
+}
