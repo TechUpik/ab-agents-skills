@@ -1,8 +1,11 @@
-# adb-api-skills
+# upik-agents-skills
 
-Plugin de skills para o repositório **rep-adb-api** da Upik.
+Plugin de skills para os repositórios da Upik — backend e frontend.
 
-Auxilia desenvolvedores a criar e manter Commands, Queries e Controllers seguindo os padrões **CQRS + MediatR + FluentValidation + Clean Architecture** do projeto.
+Auxilia desenvolvedores a criar e manter código seguindo os padrões estabelecidos em cada projeto:
+- **rep-adb-api** (C# .NET) → Commands, Queries, Controllers com CQRS + MediatR + Clean Architecture
+- **rep-upik-web** (Vue.js 2) → Views, Componentes e Modais com Options API + Bootstrap Vue
+- **ab-upik-nova-jornada** (Next.js) → Pages, Componentes e Services com React + TypeScript + Styled-Components
 
 ---
 
@@ -63,16 +66,37 @@ Após a instalação, reinicie o Claude Code. As skills e commands estarão disp
 
 ## Skills (ativadas automaticamente por contexto)
 
+### Backend — rep-adb-api (C# .NET)
+
 | Skill | Quando é ativada |
 |-------|-----------------|
-| `adb-patterns` | Perguntas sobre padrões, arquitetura, convenções gerais do projeto |
+| `adb-patterns` | Perguntas sobre padrões, arquitetura, convenções gerais |
 | `adb-create-command` | Criação de novo command / operação de escrita |
 | `adb-create-query` | Criação de query MediatR com EF Core (listagem, detalhe, paginação) |
 | `adb-dapper-query` | Criação de query Dapper (SQL complexo, dashboard, multi-mapping) |
 | `adb-create-controller` | Criação de novo controller / endpoints HTTP |
 
+### Frontend Vue — rep-upik-web (Vue.js 2)
+
+| Skill | Quando é ativada |
+|-------|-----------------|
+| `vue-patterns` | Perguntas sobre padrões, arquitetura, convenções do projeto Vue |
+| `vue-create-view` | Criação de nova view/página com rota |
+| `vue-create-component` | Criação de novo componente Vue reutilizável |
+| `vue-create-modal` | Criação de novo modal Bootstrap Vue |
+
+### Frontend Next.js — ab-upik-nova-jornada (Next.js + TypeScript)
+
+| Skill | Quando é ativada |
+|-------|-----------------|
+| `nextjs-patterns` | Perguntas sobre padrões, arquitetura, convenções do projeto Next.js |
+| `nextjs-create-page` | Criação de nova página com template e roteamento |
+| `nextjs-create-component` | Criação de componente React com styled-components |
+| `nextjs-create-service` | Criação ou expansão de service layer com axios |
+
 ## Commands (invocados via `/`)
 
+### Backend
 | Command | Flags | Descrição |
 |---------|-------|-----------|
 | `/new-command <VerbEntidade>` | — | Gera command + handler + DI |
@@ -80,11 +104,27 @@ Após a instalação, reinicie o Claude Code. As skills e commands estarão disp
 | `/new-controller <Entidade>` | `--readonly` `--admin` | Gera controller com endpoints CRUD |
 | `/new-feature <NomeDaFeature>` | — | Feature completa (command + query + controller) |
 
+### Frontend Vue
+| Command | Flags | Descrição |
+|---------|-------|-----------|
+| `/new-vue-view <NomeDaView>` | `--publica` | Gera view + rota no router.js |
+| `/new-vue-component <NomeComponente>` | `--feature <Feature>` | Gera componente Vue reutilizável |
+| `/new-vue-modal <NomeModal>` | `--feature <Feature>` | Gera modal Bootstrap Vue completo |
+
+### Frontend Next.js
+| Command | Flags | Descrição |
+|---------|-------|-----------|
+| `/new-nextjs-page <nome-da-pagina>` | `--publica` `--param <nome>` | Gera page + template + styles |
+| `/new-nextjs-component <NomeComponente>` | `--template` | Gera componente React com styled-components |
+| `/new-nextjs-service <dominio>` | `--api <api\|abv2\|match>` | Gera ou expande service layer |
+
 ## Agents (invocados pelo Claude)
 
-| Agent | Função |
-|-------|--------|
-| `adb-reviewer` | Revisa código contra os padrões do repositório |
+| Agent | Repositório | Função |
+|-------|-------------|--------|
+| `adb-reviewer` | rep-adb-api | Revisa código C# contra padrões CQRS |
+| `vue-reviewer` | rep-upik-web | Revisa código Vue.js contra padrões do projeto |
+| `nextjs-reviewer` | ab-upik-nova-jornada | Revisa código Next.js/TypeScript contra padrões do projeto |
 
 ---
 
