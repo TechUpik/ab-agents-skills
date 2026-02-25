@@ -49,16 +49,26 @@ Crie o arquivo `~/.claude/plugins/marketplaces/local/.claude-plugin/marketplace.
 ### 3. Crie o symlink do plugin no marketplace
 
 ```bash
-ln -s /caminho/para/ab-agents-skills \
-  ~/.claude/plugins/marketplaces/local/plugins/adb-api-skills
+ln -s $(pwd) ~/.claude/plugins/marketplaces/local/plugins/adb-api-skills
 ```
+
+> Execute dentro do diretório clonado (`ab-agents-skills`), ou substitua `$(pwd)` pelo caminho absoluto completo (ex: `/Users/seu-usuario/...`). Não use `~` ou variáveis — o symlink precisa de um caminho absoluto resolvido.
 
 ### 4. Registre o marketplace e instale o plugin no Claude Code
 
+Execute os dois comandos **separadamente** dentro do Claude Code:
+
 ```
-/plugin marketplace add file://$HOME/.claude/plugins/marketplaces/local
+/plugin marketplace add ~/.claude/plugins/marketplaces/local
+```
+
+Depois:
+
+```
 /plugin install adb-api-skills@local
 ```
+
+> **Atenção:** não cole os dois comandos juntos — execute um de cada vez.
 
 Após a instalação, reinicie o Claude Code. As skills e commands estarão disponíveis automaticamente.
 
