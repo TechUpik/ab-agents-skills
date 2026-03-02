@@ -86,6 +86,15 @@ Após a instalação, reinicie o Claude Code. As skills e commands estarão disp
 | `adb-dapper-query` | Criação de query Dapper (SQL complexo, dashboard, multi-mapping) |
 | `adb-create-controller` | Criação de novo controller / endpoints HTTP |
 
+### Backend — api-match (C# .NET + MongoDB)
+
+| Skill | Quando é ativada |
+|-------|-----------------|
+| `match-patterns` | Perguntas sobre padrões, arquitetura, convenções do api-match |
+| `match-create-command` | Criação de novo command com handler aninhado (operação de escrita) |
+| `match-create-query` | Criação de nova query com handler aninhado (operação de leitura) |
+| `match-create-controller` | Criação de novo controller / endpoints HTTP |
+
 ### Frontend Vue — rep-upik-web (Vue.js 2)
 
 | Skill | Quando é ativada |
@@ -114,6 +123,13 @@ Após a instalação, reinicie o Claude Code. As skills e commands estarão disp
 | `/new-controller <Entidade>` | `--readonly` `--admin` | Gera controller com endpoints CRUD |
 | `/new-feature <NomeDaFeature>` | — | Feature completa (command + query + controller) |
 
+### Backend Match
+| Command | Flags | Descrição |
+|---------|-------|-----------|
+| `/new-match-command <AcaoEntidade>` | `--dominio <Nome>` | Gera command + handler aninhado |
+| `/new-match-query <AcaoEntidade>` | `--paginado` `--lista` `--dominio <Nome>` | Gera query + handler aninhado |
+| `/new-match-controller <Entidade>` | `--b2b` `--readonly` `--cache` | Gera controller com endpoints padrão |
+
 ### Frontend Vue
 | Command | Flags | Descrição |
 |---------|-------|-----------|
@@ -135,40 +151,26 @@ Após a instalação, reinicie o Claude Code. As skills e commands estarão disp
 | `adb-reviewer` | rep-adb-api | Revisa código C# contra padrões CQRS |
 | `vue-reviewer` | rep-upik-web | Revisa código Vue.js contra padrões do projeto |
 | `nextjs-reviewer` | ab-upik-nova-jornada | Revisa código Next.js/TypeScript contra padrões do projeto |
+| `match-reviewer` | api-match | Revisa código C# contra padrões do api-match (MongoDB, handler aninhado, CQRS) |
 
 ---
 
-## Padrões do Repositório
+## Visão Geral dos Repositórios
 
-### Arquitetura
-```
-AdB.Domain        → Entidades e domínio
-AdB.Core          → Base classes (Command, CommandHandler, Message)
-AdB.Data          → Repositórios, EF Core (AdBContext), Dapper (AdBDapperContext)
-AdB.Application   → Commands, Queries, Services
-AdB.API           → Controllers, DI configs
-```
+Cada skill conhece os padrões específicos do repositório ao qual pertence. A tabela abaixo resume as principais diferenças entre os projetos cobertos.
 
-### Dois padrões de Query
+| Aspecto | rep-adb-api | api-match | rep-upik-web | ab-upik-nova-jornada |
+|---------|-------------|-----------|--------------|----------------------|
+| **Stack** | C# .NET | C# .NET | Vue.js 2 | Next.js + TypeScript |
+| **Banco** | SQL Server (EF Core + Dapper) | MongoDB | — | — |
+| **Padrão** | CQRS + MediatR + Clean Architecture | CQRS + MediatR + Clean Architecture | Options API | React + Hooks |
+| **Handler** | Arquivo separado do Command/Query | Aninhado no mesmo arquivo | — | — |
+| **Validação** | FluentValidation (`AbstractValidatorBase`) | Manual (guard clauses) | — | react-hook-form + yup |
+| **DI** | Manual em `CommandsDIConfig.cs` | Auto (MediatR Assembly scan) | — | — |
+| **IDs** | `Guid` | `string` (ObjectId) | — | — |
 
-| | MediatR + EF Core | Dapper Service |
-|-|-------------------|----------------|
-| **Arquivo** | Único (`Query + Handler + Response`) | Interface + Implementação |
-| **DI** | Automático (não registrar) | Manual em `QueriesDIConfig.cs` |
-| **SQL** | LINQ via EF Core | `SQLQueriesResource.resx` |
-| **Quando** | Queries padrão, filtros dinâmicos | SQL complexo, dashboards, relatórios |
-
-### Convenções de nomenclatura
-- **Commands:** `{Verbo}{Entidade}Command` → `RegistrarAgendamentoCommand`
-- **Handlers:** `{Entidade}CommandHandler` → `AgendamentoCommandHandler`
-- **Queries MediatR:** `{Verbo}{Entidade}Query` → `ListarArquitetosQuery`
-- **Queries Dapper:** `{Entidade}Queries` → `ClienteQueries`
-- **Controllers:** `{Entidade}Controller` → `ProdutoController`
-- **Response (listagem):** `{Entidade}ItemResponse`
-- **Result (detalhe):** `Obter{Entidade}QueryResult`
-- **Paginado:** `PagedResult<T>` ou `Resultado{Entidade}Response`
-
-### Arquivos de DI
-- Commands → `src/AdB.API/Configurations/DependencyInjections/CommandsDIConfig.cs`
-- Queries Dapper → `src/AdB.API/Configurations/DependencyInjections/QueriesDIConfig.cs`
-- Queries MediatR → auto-descobertas (não precisam de registro manual)
+Os detalhes completos de cada repositório estão nas skills de padrões correspondentes:
+- `adb-patterns` → rep-adb-api
+- `match-patterns` → api-match
+- `vue-patterns` → rep-upik-web
+- `nextjs-patterns` → ab-upik-nova-jornada
